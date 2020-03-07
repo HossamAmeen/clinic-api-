@@ -47,7 +47,7 @@ class MobileController extends Controller
         Mail::send('contact',$data,function($message) use ($data){
         
             $message->from( Auth::guard('api')->user()->email);
-            $message->to("book@tibaroyal.com");
+            $message->to("contact@u-clinics.com");
             $message->subject( 'contact' );
         });
         return $this->APIResponse(null, null, 201);

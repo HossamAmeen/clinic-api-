@@ -132,7 +132,7 @@ class ClientController extends Controller
             $data['remember_token'] = $user->remember_token ; 
             $data['email'] = $user->email ; 
             Mail::send('send_token',$data,function($message) use ($data){
-                $message->from("book@tibaroyal.com");
+                $message->from("contact@u-clinics.com");
                 $message->to( $data['email']);
                 $message->subject( 'reset password' );
             });
