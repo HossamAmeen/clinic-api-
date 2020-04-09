@@ -7,6 +7,7 @@ use App\Models\Order;
 use App\Models\UserModel;
 use Auth;
 use Mail;
+use DB;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 
@@ -20,8 +21,9 @@ class ClientController extends Controller
         if(Auth::attempt($credentials, false, false)){
             $data['id'] = Auth::user()->id;
             $client = UserModel::where("user_name", request('user_name'))->first();
-            $success['token'] =  $client->createToken('token')->accessToken;
-            return $this->APIResponse($success, null, 200);
+            // $success['token'] =  $client->createToken('token')->accessToken;
+            
+            return $this->APIResponse($data, null, 200);
         }
         $error = "Unauthorized";
         return $this->APIResponse(null, $error, 400);
@@ -29,14 +31,15 @@ class ClientController extends Controller
     }
     public function getAccount()
     {
-        // $client = UserModel::findOrFail(Auth::guard('api')->user()->id);
-        $client = ClientModel::where('client_user_id' , Auth::guard('api')->user()->id)->first();
+        // $client = UserModel::findOrFail(request('id')); Input::get('id')
+        // $client = ClientModel::where('client_user_id' , Auth::guard('api')->user()->id)->first();
+        $client = ClientModel::where('client_user_id' , request('id') )->first();
         return $this->APIResponse($client, null, 201);
     }
 
     public function updateAccount(Request $request)
     {
-        $user = UserModel::find(Auth::guard('api')->user()->id);
+        $user = UserModel::find(request('id'));
         $client = ClientModel::where('client_user_id' , $user->id)->first();
         if(isset($client))
         {
@@ -60,7 +63,7 @@ class ClientController extends Controller
     public function updatePassword(Request $request)
     {
 
-        $user = UserModel::find(Auth::guard('api')->user()->id);
+        $user = UserModel::find(request('id'));
        
         if(isset($user))
         {
@@ -76,13 +79,14 @@ class ClientController extends Controller
 
     public function getLastLicence()
     {
-        // return Auth::guard('api')->user()->id ;
-        $client = ClientModel::where('client_user_id' ,Auth::guard('api')->user()->id)->first();
+        // return request('id') ;
+        $client = ClientModel::where('client_user_id' ,request('id'))->first();
         return $this->APIResponse(\App\Models\LicenceModel::where('client_id',$client->id)->first(), null, 201);
     }
     public function getPatients()
     {
-        $client = ClientModel::where('client_user_id' ,Auth::guard('api')->user()->id)->first();
+        
+        $client = ClientModel::where('client_user_id' ,request('id'))->first();
         $patients = \App\Models\PatientModel::where('client_id',$client->id)->get();
         $data = array();
         foreach($patients as $patient){
@@ -92,7 +96,8 @@ class ClientController extends Controller
            if(isset($visit))
            {
             $datas['initial_diagnose'] = $visit->initial_diagnose;
-            $datas['date'] = $visit->created_at;
+            $datas['date'] = $visit->created_at->format('Y-m-d');
+            $datas['address'] = $patient->address;
            }
            else
            {
@@ -103,6 +108,7 @@ class ClientController extends Controller
            $data[] = $datas;   
         }
         // return $patients;
+        // return "tess";
         return $this->APIResponse($data, null, 201);
         
     }
@@ -115,7 +121,53 @@ class ClientController extends Controller
     public function getPatientVisits($id)
     {
         return $this->APIResponse(\App\Models\PatientVisitModel::where('patient_id' , $id)->get(), null, 201);
-        
+    }
+    public function getAppointments($clinic_id = null)
+    {
+        if($clinic_id == null)
+            // return $this->APIResponse(\App\Models\Appointment::where('user_id' , request('id'))->get(), null, 201)->with('patient');
+            return $this->APIResponse(\App\Models\Appointment::with(['vistType','clinic','patient'])
+            ->where('user_id' , request('id'))
+            ->where('date' , date('Y-m-d'))
+            ->orderBy('from_time')
+            ->get(),
+            
+            null, 201);
+        else
+        {
+            return $this->APIResponse(\App\Models\Appointment::with(['vistType','clinic','patient'])
+            ->where('user_id' , request('id'))
+            ->where('date' , date('Y-m-d'))
+            ->where('clinic_id' , $clinic_id)
+            ->orderBy('from_time')
+            ->get(), 
+            null, 201);
+        }
+    }
+    public function setAppointment(Request $request)
+    {
+       $request['user_id']  = request('id');
+        \App\Models\Appointment::create($request->all());
+        return $this->APIResponse(null, null, 201);
+    }
+    public function delayAppointment(Request $request)
+    {
+    //    $appointments =  \App\Models\Appointment::where('user_id' , request('id'))
+    //         ->where('date' , date('Y-m-d'))
+    //         ->where('from' ,'>=', request('start_time') )
+    //         ->increment('from', "30 minutes");
+    $time =  request('delay') ; 
+    // $query = "update appointments_tb
+    // set from_time = ADDTIME(from_time,'12:$time:00')
+    // where date = CURDATE() 
+    // and from_time >= " .  request('start_time') . "and user_id = " . request('id');
+    $query = "update appointments_tb";
+    $query .=" set from_time = ADDTIME(from_time,'00:$time:00')";
+    $query .=" where date = CURDATE() and from_time >= '" . request('start_time') ."' and user_id = " . request('id');
+    $users = DB::select($query);
+    // return $users;
+            // ->update(['from' => 3 , 'to' => 4]);
+        return $this->APIResponse(null, null, 201);
     }
     public function getPatientVisit($id)
     {

@@ -21,6 +21,7 @@ class CreateClientTable extends Migration
             $table->integer('no_of_patients');
             $table->string('mac_address',25);
             $table->string('doctor_full_name',120);
+            $table->boolean('in_clinic_now')->default(0);
             $table->string('__TOKEN',120);
             $table->string('qualifications',1024);
             $table->integer('specialist_id')->unsigned()->nullable();

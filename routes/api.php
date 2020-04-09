@@ -13,6 +13,9 @@ Route::namespace ("APIs")->group(function () {
         Route::get("patient/{id}", "ClientController@getPatient");
         Route::get("patient/visits/{id}", "ClientController@getPatientVisits");
         Route::get("visits/{id}", "ClientController@getPatientVisit");
+        Route::get("appointments/{id?}", "ClientController@getAppointments");
+        Route::post("appointment", "ClientController@setAppointment");
+        Route::put("delay-appointment", "ClientController@delayAppointment");
         Route::put("reset-password", "ClientController@resetPasswotd");
         Route::post("send-token", "ClientController@sendToken");
     });

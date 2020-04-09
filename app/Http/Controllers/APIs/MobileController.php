@@ -40,16 +40,6 @@ class MobileController extends Controller
     }
     public function contact(Request $request)
     {
-        $data=[
-           "text" => $request->text
-        ];
-        // return ;
-        Mail::send('contact',$data,function($message) use ($data){
-        
-            $message->from( Auth::guard('api')->user()->email);
-            $message->to("contact@u-clinics.com");
-            $message->subject( 'contact' );
-        });
         return $this->APIResponse(null, null, 201);
     }
     
