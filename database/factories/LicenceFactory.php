@@ -10,7 +10,7 @@ $factory->define(\App\Models\LicenceModel::class, function (Faker $faker) {
     return [
         'start_on'=>$someDate,
         'end_on'=>$nextYear,
-        'client_id'=>$faker->randomElement($array = range (1,\App\Helpers\SeedingHelper::NO_OF_CLIENTS)),
+        'clinic_id'=>$faker->randomElement($array = range (1,\App\Helpers\SeedingHelper::NO_OF_CLIENTS)),
 		'user_id'=>$faker->randomElement($array = range (1,\App\Helpers\SeedingHelper::NO_OF_USERS)),
 
     ];

@@ -23,6 +23,7 @@ Route::namespace ("APIs")->group(function () {
     Route::get("countries", "MobileController@countries");
     Route::get("cities", "MobileController@cities");
     Route::get("towns", "MobileController@towns");
+    Route::get("visit-types", "MobileController@visit_types");
     Route::get("speciallists", "MobileController@specials");
     Route::get("external-links", "MobileController@externalLinks");
     Route::post("contact", "MobileController@contact");

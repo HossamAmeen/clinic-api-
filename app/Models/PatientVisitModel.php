@@ -10,11 +10,21 @@ class PatientVisitModel extends Model
 
     protected $fillable = [
         'user_id', 'client_id','active','initial_diagnose',
-        'prescription_image','notes','consultation_date',
+        // 'prescription_image',
+        'notes','consultation_date',
         'visit_datetime','client_id','patient_id'
     ];
 
-    public static function create_visit(){
-
+        public function visitType()
+        {
+            return $this->belongsTo(visitType::class);
+        }
+        public function prescriptionImages()
+        {
+            return $this->hasMany(PrescriptionImage::class , 'visit_id');
+        }
+        public function patient()
+        {
+            return $this->belongsTo(PatientModel::class);
         }
 }//end patient visit

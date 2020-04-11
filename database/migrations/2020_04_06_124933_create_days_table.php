@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateLicenceTable extends Migration
+class CreateDaysTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,17 +13,15 @@ class CreateLicenceTable extends Migration
      */
     public function up()
     {
-        Schema::create('licence_tb', function (Blueprint $table) {
-            $table->increments('id');
-            $table->date('start_on');
-            $table->date('end_on');
-            $table->integer('avl_files_size_in_mb')->default(100);
-            $table->integer('clinic_id')->unsigned();
-            $table->foreign('clinic_id')->references('id')
-            ->on('clinic_tb')->onDelete('cascade')->onUpdate('cascade');
+        Schema::create('days', function (Blueprint $table) {
+            $table->increments('id');  
+            $table->string('ar_title');
+            $table->string('en_title');
+
+           
             $table->integer('user_id')->unsigned()->nullable();
             $table->foreign('user_id')->references('id')->on('users_tb')->onDelete('cascade')->onUpdate('cascade');
-            $table->boolean('active')->default(1);
+            $table->softDeletes();
             $table->timestamps();
         });
     }
@@ -35,6 +33,6 @@ class CreateLicenceTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('licence_tb');
+        Schema::dropIfExists('days');
     }
 }

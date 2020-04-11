@@ -42,5 +42,9 @@ class MobileController extends Controller
     {
         return $this->APIResponse(null, null, 201);
     }
+    public function visit_types()
+    {
+        return $this->APIResponse(\App\Models\VisitType::all(), null, 201);
+    }
     
 }

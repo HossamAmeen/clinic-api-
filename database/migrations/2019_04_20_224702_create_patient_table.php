@@ -21,7 +21,9 @@ class CreatePatientTable extends Migration
             $table->string('address',120)->nullable();
             $table->string('social_status',25)->nullable();
             $table->string('ssn',14)->nullable();
-            $table->integer('client_pk_value')->unsigned()->nullable();
+            $table->integer('patient_user_id')->unsigned()->nullable(); /// patient_user_id
+            // $table->integer('client_pk_value')->unsigned()->nullable(); 
+            $table->string('pic',120)->nullable();
             $table->integer('user_id')->unsigned()->nullable();
             $table->foreign('user_id')->references('id')->on('users_tb')->onDelete('cascade')->onUpdate('cascade');
             $table->integer('client_id')->unsigned()->nullable();

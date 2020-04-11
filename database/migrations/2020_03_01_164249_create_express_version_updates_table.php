@@ -13,6 +13,7 @@ class CreateExpressVersionUpdatesTable extends Migration
      */
     public function up()
     {
+        
         Schema::create('express_version_updates_tb', function (Blueprint $table) {
             $table->increments('id');
             $table->string('title',120);

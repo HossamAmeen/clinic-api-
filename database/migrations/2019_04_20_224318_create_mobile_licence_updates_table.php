@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateClientUserModelsTable extends Migration
+class CreateMobileLicenceUpdatesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,13 +13,14 @@ class CreateClientUserModelsTable extends Migration
      */
     public function up()
     {
-        Schema::create('client_user_tb', function (Blueprint $table) {
+        Schema::create('mobile_licence_updates_tb', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('client_pk_value')->unsigned()->nullable();
+            $table->string('start_on');
+            $table->string('end_on');
+            $table->integer('mobile_licence_id')->unsigned();
+            $table->foreign('mobile_licence_id')->references('id')->on('mobile_licence_tb');
             $table->integer('user_id')->unsigned()->nullable();
-            $table->foreign('user_id')->references('id')->on('users_tb');
-            $table->integer('client_id')->unsigned();
-            $table->foreign('client_id')->references('id')->on('client_tb')->onDelete('cascade')->onUpdate('cascade');
+            $table->foreign('user_id')->references('id')->on('users_tb')->onDelete('cascade')->onUpdate('cascade');
             $table->boolean('active')->default(1);
             $table->timestamps();
         });
@@ -32,6 +33,6 @@ class CreateClientUserModelsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('client_user_tb');
+        Schema::dropIfExists('mobile_licence_updates_tb');
     }
 }

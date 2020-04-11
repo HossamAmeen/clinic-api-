@@ -27,4 +27,9 @@ class ClientModel extends Model
         'clinic_name','clinic_email','doctor_tel','mac_address','
 		doctor_full_name','user_id','end_on','town_id','country_id','city_id','__TOKEN'
     ];
+
+    public function town()
+    {
+        return $this->belongsTo(TownModel::class);
+    }
 }//end client model

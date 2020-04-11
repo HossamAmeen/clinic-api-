@@ -24,7 +24,8 @@ class CreateNewsTable extends Migration
             $table->string('image')->default('news.png');
             $table->string('image2')->default('news2.png');
 
-         
+            $table->integer('client_id')->unsigned()->nullable();
+            $table->foreign('client_id')->references('id')->on('client_tb')->onUpdate('cascade');
 
             $table->integer('user_id')->unsigned()->nullable();
             $table->foreign('user_id')->references('id')->on('users_tb')->onUpdate('cascade');

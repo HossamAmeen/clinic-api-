@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateAndroidLicenceTable extends Migration
+class CreateMobileLicenceTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,7 +13,7 @@ class CreateAndroidLicenceTable extends Migration
      */
     public function up()
     {
-        Schema::create('android_licence_tb', function (Blueprint $table) {
+        Schema::create('mobile_licence_tb', function (Blueprint $table) {
             $table->increments('id');
             $table->date('start_on');
             $table->date('end_on');
@@ -33,6 +33,6 @@ class CreateAndroidLicenceTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('android_licence_tb');
+        Schema::dropIfExists('mobile_licence_tb');
     }
 }

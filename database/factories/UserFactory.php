@@ -16,3 +16,19 @@ $factory->define(App\Models\UserModel::class, function (Faker $faker) {
         'role'=>$faker->randomElement($array = array (1,10,100)),
     ];
 });
+
+$factory->define(App\Models\Clinic::class, function (Faker $faker) {
+    return [
+        'clinic_name'=>$faker->firstName(),
+        'clinic_tel'=>$faker->e164PhoneNumber(),
+        'facebook' => "https://www.facebook.com/",
+        
+        'patient_waiting_time_in_minutes' =>$faker->randomDigitNotNull,
+       
+        'mac_address'=>$faker->username,
+        'in_clinic_now'=>$faker->boolean(),
+        'client_id'=>$faker->randomElement($array = range (1,\App\Helpers\SeedingHelper::NO_OF_USERS)),
+        'user_id'=>$faker->randomElement($array = range (1,\App\Helpers\SeedingHelper::NO_OF_USERS)),
+       
+    ];
+});

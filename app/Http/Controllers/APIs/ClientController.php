@@ -32,8 +32,8 @@ class ClientController extends Controller
     public function getAccount()
     {
         // $client = UserModel::findOrFail(request('id')); Input::get('id')
-        // $client = ClientModel::where('client_user_id' , Auth::guard('api')->user()->id)->first();
-        $client = ClientModel::where('client_user_id' , request('id') )->first();
+        // $client = ClientModel::where('client_user_id' , Auth::guard('api')->user()->id)->first();twon
+        $client = ClientModel::with('town')->where('client_user_id' , request('id') )->first();
         return $this->APIResponse($client, null, 201);
     }
 
@@ -120,7 +120,7 @@ class ClientController extends Controller
     }
     public function getPatientVisits($id)
     {
-        return $this->APIResponse(\App\Models\PatientVisitModel::where('patient_id' , $id)->get(), null, 201);
+        return $this->APIResponse(\App\Models\PatientVisitModel::with('visitType')->where('patient_id' , $id)->get(), null, 201);
     }
     public function getAppointments($clinic_id = null)
     {
@@ -152,26 +152,26 @@ class ClientController extends Controller
     }
     public function delayAppointment(Request $request)
     {
-    //    $appointments =  \App\Models\Appointment::where('user_id' , request('id'))
-    //         ->where('date' , date('Y-m-d'))
-    //         ->where('from' ,'>=', request('start_time') )
-    //         ->increment('from', "30 minutes");
-    $time =  request('delay') ; 
-    // $query = "update appointments_tb
-    // set from_time = ADDTIME(from_time,'12:$time:00')
-    // where date = CURDATE() 
-    // and from_time >= " .  request('start_time') . "and user_id = " . request('id');
-    $query = "update appointments_tb";
-    $query .=" set from_time = ADDTIME(from_time,'00:$time:00')";
-    $query .=" where date = CURDATE() and from_time >= '" . request('start_time') ."' and user_id = " . request('id');
-    $users = DB::select($query);
-    // return $users;
-            // ->update(['from' => 3 , 'to' => 4]);
+        //    $appointments =  \App\Models\Appointment::where('user_id' , request('id'))
+        //         ->where('date' , date('Y-m-d'))
+        //         ->where('from' ,'>=', request('start_time') )
+        //         ->increment('from', "30 minutes");
+        $time =  request('delay') ; 
+        // $query = "update appointments_tb
+        // set from_time = ADDTIME(from_time,'12:$time:00')
+        // where date = CURDATE() 
+        // and from_time >= " .  request('start_time') . "and user_id = " . request('id');
+        $query = "update appointments_tb";
+        $query .=" set from_time = ADDTIME(from_time,'00:$time:00')";
+        $query .=" where date = CURDATE() and from_time >= '" . request('start_time') ."' and user_id = " . request('id');
+        $users = DB::select($query);
+        // return $users;
+                // ->update(['from' => 3 , 'to' => 4]);
         return $this->APIResponse(null, null, 201);
     }
     public function getPatientVisit($id)
     {
-        return $this->APIResponse(\App\Models\PatientVisitModel::find($id), null, 201);
+        return $this->APIResponse(\App\Models\PatientVisitModel::with(['prescriptionImages' , 'patient'])->find($id), null, 201);
         
     }
     public function sendToken(Request $request)

@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateAndroidLicenceUpdatesTable extends Migration
+class CreateWorkTimesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,17 @@ class CreateAndroidLicenceUpdatesTable extends Migration
      */
     public function up()
     {
-        Schema::create('android_licence_updates_tb', function (Blueprint $table) {
+        Schema::create('work_times', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('start_on');
-            $table->string('end_on');
-            $table->integer('android_licence_id')->unsigned();
-            $table->foreign('android_licence_id')->references('id')->on('android_licence_tb');
+            $table->time('from');
+            $table->time('to');
+            $table->integer('day_id')->unsigned()->nullable();
+            $table->foreign('day_id')->references('id')->on('days')->onDelete('cascade')->onUpdate('cascade');
+            $table->integer('clinic_id')->unsigned()->nullable();
+            $table->foreign('clinic_id')->references('id')->on('clinic_tb')->onDelete('cascade')->onUpdate('cascade');
             $table->integer('user_id')->unsigned()->nullable();
             $table->foreign('user_id')->references('id')->on('users_tb')->onDelete('cascade')->onUpdate('cascade');
-            $table->boolean('active')->default(1);
+            $table->softDeletes();
             $table->timestamps();
         });
     }
@@ -33,6 +35,6 @@ class CreateAndroidLicenceUpdatesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('android_licence_updates_tb');
+        Schema::dropIfExists('work_times');
     }
 }
