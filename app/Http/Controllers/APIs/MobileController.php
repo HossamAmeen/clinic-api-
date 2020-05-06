@@ -9,7 +9,7 @@ use Auth;
 class MobileController extends Controller
 {
     use APIResponseTrait;
-   
+
     public function countries()
     {
         return $this->APIResponse(\App\Models\CountryModel::get(), null, 201);
@@ -42,9 +42,9 @@ class MobileController extends Controller
     {
         return $this->APIResponse(null, null, 201);
     }
-    public function visit_types()
+    public function visit_types($clinic_id)
     {
-        return $this->APIResponse(\App\Models\VisitType::all(), null, 201);
+        return $this->APIResponse(\App\Models\VisitType::where('clinic_id' , $clinic_id)->get(), null, 201);
     }
-    
+
 }
