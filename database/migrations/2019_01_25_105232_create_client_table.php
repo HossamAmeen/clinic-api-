@@ -25,6 +25,8 @@ class CreateClientTable extends Migration
             $table->boolean('is_available_to_all')->default(1);
             $table->boolean('is_reservation_blocked')->default(0);
             
+            $table->string('gender')->nullable();
+            
 
            
             $table->integer('specialist_id')->unsigned()->nullable();

@@ -12,7 +12,7 @@ class MobileController extends Controller
 
     public function countries()
     {
-        return $this->APIResponse(\App\Models\CountryModel::get(), null, 201);
+        return $this->APIResponse(\App\Models\CountryModel::with('cities.towns')->get(), null, 201);
     }
     public function cities()
     {
@@ -36,7 +36,9 @@ class MobileController extends Controller
     }
     public function pref()
     {
-        return $this->APIResponse(\App\Models\PrefModel::all(), null, 201);
+        $data['prefs'] = \App\Models\PrefModel::all() ; 
+        $data['externalLinks'] = \App\Models\ExternalLinksModel::all();
+        return $this->APIResponse($data, null, 201);
     }
     public function contact(Request $request)
     {

@@ -22,7 +22,7 @@ class CityModel extends Model
 
     public function towns()
     {
-        return $this->hasMany('App\Models\TownModel','town_id');
+        return $this->hasMany('App\Models\TownModel','city_id');
     }
 
     public static function download_city()

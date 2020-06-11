@@ -54,7 +54,7 @@ class DatabaseSeeder extends Seeder
 
             'client_email' => 'clinic_email',
             'doctor_tel' => 'asd',
-
+            'country_id' => 1 ,
             'doctor_full_name' => 'asd',
             '__TOKEN' => 'asd',
             'client_user_id' => 2,

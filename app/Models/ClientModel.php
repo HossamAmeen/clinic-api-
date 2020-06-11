@@ -24,12 +24,21 @@ class ClientModel extends Model
     protected $primary_key = 'id';
 
     protected $fillable = [
-        'clinic_name','clinic_email','doctor_tel','mac_address','
-		doctor_full_name','user_id','end_on','town_id','country_id','city_id','__TOKEN'
+        'doctor_tel','mac_address','gender',
+        'doctor_full_name','user_id','end_on','town_id','country_id','__TOKEN'
     ];
 
     public function town()
     {
         return $this->belongsTo(TownModel::class);
+    }
+    public function country()
+    {
+        return $this->belongsTo(TownModel::class , 'country_id');
+    }
+    
+    public function specialist()
+    {
+        return $this->belongsTo(SpecialistModel::class , 'specialist_id');
     }
 }//end client model

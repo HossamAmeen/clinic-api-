@@ -22,7 +22,7 @@ class ClientController extends Controller
         $credentials = request(['user_name', 'password']);
 
         if (Auth::attempt($credentials, false, false)) {
-            $data['id'] = Auth::user()->id;
+            $data = Auth::user();
             $client = UserModel::where("user_name", request('user_name'))->first();
             // $success['token'] =  $client->createToken('token')->accessToken;
 
@@ -36,7 +36,7 @@ class ClientController extends Controller
     {
         // $client = UserModel::findOrFail(request('id')); Input::get('id')
         // $client = ClientModel::where('client_user_id' , Auth::guard('api')->user()->id)->first();twon
-        $client = ClientModel::with('town')->where('client_user_id', request('id'))->first();
+        $client = ClientModel::with(['town' , 'country' , 'specialist'])->where('client_user_id', request('id'))->first();
         return $this->APIResponse($client, null, 201);
     }
 
@@ -46,14 +46,15 @@ class ClientController extends Controller
         $client = ClientModel::where('client_user_id', $user->id)->first();
         if (isset($client)) {
             // return $client;
-            $client->clinic_email = $request->clinic_email;
-            $client->clinic_name = $request->clinic_name;
-            $client->doctor_full_name = $request->doctor_full_name;
-            $client->doctor_tel = $request->doctor_tel;
-            $client->specialist_id = $request->specialist_id;
-            $client->country_id = $request->country_id;
-            $client->city_id = $request->city_id;
-            $client->town_id = $request->town_id;
+            // $client->clinic_email = $request->clinic_email;
+            // $client->clinic_name = $request->clinic_name;
+            // $client->doctor_full_name = $request->doctor_full_name;
+            // $client->doctor_tel = $request->doctor_tel;
+            // $client->specialist_id = $request->specialist_id;
+            // $client->country_id = $request->country_id;
+            // // $client->city_id = $request->city_id;
+            // $client->town_id = $request->town_id;
+            $client->update($request->all());
             $client->save();
             return $this->APIResponse(null, null, 201);
         }
@@ -172,10 +173,11 @@ class ClientController extends Controller
     {
         $appointment = Appointment::find(request('appointment_id'));
         // $appointment_after = Appointment::find(request('after_appointment_id'));
-
-        $appointments_before =Appointment::where('from_time' ,'<', $appointment->from_time)
-                                            ->where('date' , $appointment->date)->get();
-        $durion = (new Carbon($appointment->to_time))->diffInMinutes(new Carbon($appointment->from_time));
+        if(isset($appointment))
+        {
+            $appointments_before =Appointment::where('from_time' ,'<', $appointment->from_time)
+            ->where('date' , $appointment->date)->get();
+            $durion = (new Carbon($appointment->to_time))->diffInMinutes(new Carbon($appointment->from_time));
             foreach($appointments_before as $appointment_before)
             {
 
@@ -183,24 +185,39 @@ class ClientController extends Controller
               //  $diff_in_minutes = $to->diffInMinutes($from);
               //  print_r($diff_in_minutes); // Output: 20
                 $item  =Appointment::find($appointment_before->id);
-                $item->from_time = (new Carbon($item->from_time))->addMinutes($durion)->format('H:s:i')  ;
-                $item->to_time = (new Carbon($item->to_time))->addMinutes($durion)->format('H:s:i')  ;
-                $item->save();
+                if(isset( $item ))
+                {
+                    $item->from_time = (new Carbon($item->from_time))->addMinutes($durion)->format('H:s:i')  ;
+                    $item->to_time = (new Carbon($item->to_time))->addMinutes($durion)->format('H:s:i')  ;
+                    $item->save();
+                }
+                else
+                {
+                    return $this->APIResponse(null, 'appointments not found', 400);
+                }
+                
                 $appointment->from_time = request('after_time');
                 $appointment->to_time =  (new Carbon($appointment->from_time))->addMinutes($durion)->format('H:s:i')  ;
                 $appointment->save();
             }
             return $this->APIResponse(null, null, 201);
-        // return $appointments_before ;
-        // return (new Carbon($appointment->to_time))->diff(new Carbon($appointment->from_time))->format('%h:%I'); addMinutes
-        // return $appointment->to_time - $appointment->from_time;
+            // return $appointments_before ;
+            // return (new Carbon($appointment->to_time))->diff(new Carbon($appointment->from_time))->format('%h:%I'); addMinutes
+            // return $appointment->to_time - $appointment->from_time;
             return $this->APIResponse(\App\Models\Appointment::with(['vistType', 'clinic', 'patient'])
             ->where('user_id', request('id'))
             ->where('date', date('Y-m-d'))
             ->orderBy('from_time')
             ->get(),
 
-        null, 201);
+            null, 201);
+        }
+        else
+        {
+            return $this->APIResponse(null, 'appointments not found', 400);
+        }
+       
+       
     }
     public function getPatientVisit($id)
     {

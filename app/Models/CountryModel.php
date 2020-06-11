@@ -17,7 +17,7 @@ class CountryModel extends Model
 
     public function cities()
     {
-        return $this->hasMany('App\Models\CityModel','city_id');
+        return $this->hasMany('App\Models\CityModel','country_id');
     }
 
     public static function download_country()
