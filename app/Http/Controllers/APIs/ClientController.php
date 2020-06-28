@@ -27,7 +27,9 @@ class ClientController extends Controller
             $data = Auth::user();
             $client = UserModel::where("user_name", request('user_name'))->first();
             // $success['token'] =  $client->createToken('token')->accessToken;
-
+            // return $this->APIResponse($data, null, 200);
+            $datas = ClientModel::where('client_user_id' , Auth::user()->id)->first();
+            $data['id'] =  $datas->id;
             return $this->APIResponse($data, null, 200);
         }
         $error = "Unauthorized";
@@ -92,11 +94,11 @@ class ClientController extends Controller
     public function getPatients()
     {
 
-        $client = ClientModel::where('client_user_id', request('id'))->first();
+        $client = ClientModel::find(request('id'));
         if(isset($client))
         {
             $clinics = Clinic::where('client_id' , $client->id)->get('id')->toArray(); 
-            $patients = PatientModel::whereIn('client_id', $clinics)->get();
+            $patients = PatientModel::where('client_id', $client->id)->get();
             $data = array();
             foreach ($patients as $patient) {
                 $datas['id'] = $patient->id;
@@ -105,7 +107,7 @@ class ClientController extends Controller
                 $visit = \App\Models\PatientVisitModel::where('patient_id', $patient->id)->orderBy('id', 'DESC')->first();
                 if (isset($visit)) {
                     $datas['initial_diagnose'] = $visit->initial_diagnose;
-                    $datas['date'] = $visit->created_at->format('Y-m-d');
+                    $datas['date'] = $visit->visit_datetime;
                    
                 } else {
                     $datas['initial_diagnose'] = " ";
@@ -128,17 +130,22 @@ class ClientController extends Controller
         // return $this->APIResponse(\App\Models\PatientModel::find($id), null, 201);
         return $this->APIResponse(\App\Models\PatientModel::withCount('visits')->find($id), null, 201);
     }
-    public function getPatientVisits($id)
+    public function getPatientVisits()
     {
-        return $this->APIResponse(\App\Models\PatientVisitModel::with('visitType')->where('patient_id', $id)->get(), null, 201);
+       
+        return $this->APIResponse(\App\Models\PatientVisitModel::with('visitType')->where('patient_id', request('id'))->get(), null, 201);
     }
     public function getAppointments($clinic_id = null)
     {
         if ($clinic_id == null)
-        // return $this->APIResponse(\App\Models\Appointment::where('user_id' , request('id'))->get(), null, 201)->with('patient');
         {
+            $client = ClientModel::findOrFail(request('id'));
+            // return request('id') ;
+            // return $client;
+            $clinics = Clinic::where('client_id' , $client->id)->get('id')->toArray(); 
+            // return $clinics;
             return $this->APIResponse(\App\Models\Appointment::with(['vistType', 'clinic', 'patient'])
-                    ->where('user_id', request('id'))
+                    ->whereIn('clinic_id', $clinics)
                     ->where('date', date('Y-m-d'))
                     ->orderBy('from_time')
                     ->get(),
@@ -146,6 +153,9 @@ class ClientController extends Controller
 
                 null, 201);
         } else {
+            
+           
+            
             return $this->APIResponse(\App\Models\Appointment::with(['vistType', 'clinic', 'patient'])
                     ->where('user_id', request('id'))
                     ->where('date', date('Y-m-d'))
@@ -230,9 +240,9 @@ class ClientController extends Controller
        
        
     }
-    public function getPatientVisit($id)
+    public function getPatientVisit()
     {
-        return $this->APIResponse(\App\Models\PatientVisitModel::with(['prescriptionImages', 'patient'])->find($id), null, 201);
+        return $this->APIResponse(\App\Models\PatientVisitModel::with(['prescriptionImages', 'patient'])->find(request('id')), null, 201);
 
     }
     public function sendToken(Request $request)

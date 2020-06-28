@@ -10,7 +10,7 @@ class Appointment extends Model
 
     protected $fillable = ['date' , 'from_time','to_time',
     'is_online_reservation','visit_type_id'
-    ,'patient_id' , 'user_id' ,'active'];
+    ,'patient_id' ,'clinic_id', 'user_id' ,'active'];
 
     public function patient()
     {
