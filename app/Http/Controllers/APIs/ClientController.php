@@ -7,6 +7,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Appointment;
 use App\Models\ClientModel;
 use App\Models\UserModel;
+use App\Models\PatientModel;
+use App\Models\Clinic;
 use Auth;
 use Image, Carbon\Carbon, File;
 
@@ -85,30 +87,39 @@ class ClientController extends Controller
         $client = ClientModel::where('client_user_id', request('id'))->first();
         return $this->APIResponse(\App\Models\LicenceModel::where('client_id', $client->id)->first(), null, 201);
     }
+
+  
     public function getPatients()
     {
 
         $client = ClientModel::where('client_user_id', request('id'))->first();
-        $patients = \App\Models\PatientModel::where('client_id', $client->id)->get();
-        $data = array();
-        foreach ($patients as $patient) {
-            $datas['id'] = $patient->id;
-            $datas['patient_name'] = $patient->full_name;
-            $visit = \App\Models\PatientVisitModel::where('patient_id', $patient->id)->orderBy('id', 'DESC')->first();
-            if (isset($visit)) {
-                $datas['initial_diagnose'] = $visit->initial_diagnose;
-                $datas['date'] = $visit->created_at->format('Y-m-d');
+        if(isset($client))
+        {
+            $clinics = Clinic::where('client_id' , $client->id)->get('id')->toArray(); 
+            $patients = PatientModel::whereIn('client_id', $clinics)->get();
+            $data = array();
+            foreach ($patients as $patient) {
+                $datas['id'] = $patient->id;
+                $datas['patient_name'] = $patient->full_name;
                 $datas['address'] = $patient->address;
-            } else {
-                $datas['initial_diagnose'] = " ";
-                $datas['date'] = " ";
+                $visit = \App\Models\PatientVisitModel::where('patient_id', $patient->id)->orderBy('id', 'DESC')->first();
+                if (isset($visit)) {
+                    $datas['initial_diagnose'] = $visit->initial_diagnose;
+                    $datas['date'] = $visit->created_at->format('Y-m-d');
+                   
+                } else {
+                    $datas['initial_diagnose'] = " ";
+                    $datas['date'] = " ";
+                   
+                }
+    
+                $data[] = $datas;
             }
-
-            $data[] = $datas;
+            // return $patients;
+            // return "tess";
+            return $this->APIResponse($data, null, 201);
         }
-        // return $patients;
-        // return "tess";
-        return $this->APIResponse($data, null, 201);
+        return $this->APIResponse(null, "this client not found", 400);
 
     }
 
