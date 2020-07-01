@@ -19,6 +19,7 @@ Route::namespace ("APIs")->group(function () {
         Route::get("change-order-appointment", "ClientController@change_order_appointment");
         Route::put("reset-password", "ClientController@resetPasswotd");
         Route::post("send-token", "ClientController@sendToken");
+        Route::get("add-order", "ClientController@addOrder");
     });
 
     Route::get("countries", "MobileController@countries");

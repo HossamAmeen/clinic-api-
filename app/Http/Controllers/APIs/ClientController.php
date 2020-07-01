@@ -274,4 +274,14 @@ class ClientController extends Controller
         }
         return $this->APIResponse(null, "not found", 404);
     }
+
+    public function addOrder()
+    {
+        \App\Models\PrintingOrder::create([
+         'order' => request('order') , 
+         'client_id' => request('id'),
+         'status' => "لم يتم الرد"
+        ]);
+        return $this->APIResponse(null, null, 200);
+    }
 }
