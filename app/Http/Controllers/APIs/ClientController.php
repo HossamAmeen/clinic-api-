@@ -147,7 +147,7 @@ class ClientController extends Controller
             // return $clinics;
         //    return   ;
             return $this->APIResponse( \App\Models\Appointment::with(['vistType', 'clinic', 'patient'])
-            ->whereIn('clinic_id', [98])
+            ->whereIn('clinic_id', $clinics)
             // ->where('date', date('Y-m-d'))
             ->orderBy('from_time')
             ->get(),
