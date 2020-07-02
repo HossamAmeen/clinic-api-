@@ -8,6 +8,7 @@ use App\Models\Appointment;
 use App\Models\ClientModel;
 use App\Models\UserModel;
 use App\Models\PatientModel;
+use App\Models\PatientClientModel;
 use App\Models\Clinic;
 use Auth;
 use Image, Carbon\Carbon, File;
@@ -167,7 +168,14 @@ class ClientController extends Controller
     }
     public function setAppointment(Request $request)
     {
-        $request['user_id'] = request('id');
+        $request['clinic_id'] = request('clinic_id');
+        $clinic = Clinic::find(request('clinic_id'));
+        if(isset($clinic) ){
+            // return "Test";
+           $patient =  PatientClientModel::where('client_id' , $clinic->client_id)->where('client_pk_value' , request('patient_id'))->first();
+           $request['patient_id'] = $patient->patient_id ;  
+        }
+        // return $request->all();
         \App\Models\Appointment::create($request->all());
         return $this->APIResponse(null, null, 201);
     }
@@ -282,6 +290,7 @@ class ClientController extends Controller
          'client_id' => request('id'),
          'status' => "لم يتم الرد"
         ]);
+
         return $this->APIResponse(null, null, 200);
     }
 }

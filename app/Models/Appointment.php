@@ -8,7 +8,8 @@ class Appointment extends Model
 {
     protected  $table = "appointments_tb";
 
-    protected $fillable = ['date' , 'from_time','to_time',
+    protected $fillable = [
+        'date' , 'from_time','to_time',
     'is_online_reservation','visit_type_id'
     ,'patient_id' ,'clinic_id', 'user_id' ,'active'];
 
