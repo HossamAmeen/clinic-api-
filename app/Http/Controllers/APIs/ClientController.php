@@ -155,7 +155,7 @@ class ClientController extends Controller
     public function getPatientVisits()
     {
        
-        return $this->APIResponse(\App\Models\PatientVisitModel::with('visitType')->where('patient_id', request('id'))->get(), null, 201);
+        return $this->APIResponse(\App\Models\PatientVisitModel::with(['visitType', 'prescriptionImages'])->where('patient_id', request('id'))->get(), null, 201);
     }
     public function getAppointments($clinic_id = null)
     {
