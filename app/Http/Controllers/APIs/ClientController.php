@@ -143,8 +143,8 @@ class ClientController extends Controller
             $client = ClientModel::findOrFail(request('id'));
             // return request('id') ;
             // return $client;
-            $clinics = Clinic::where('client_id' , $client->id)->get('id')->toArray(); 
-            // return $clinics;
+            $clinics = Clinic::where('client_id' , $client->id)->pluck('id'); 
+            return $clinics;
            return  \App\Models\Appointment::with(['vistType', 'clinic', 'patient'])
                     ->whereIn('clinic_id', [98])
                     // ->where('date', date('Y-m-d'))
