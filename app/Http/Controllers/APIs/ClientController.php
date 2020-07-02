@@ -146,7 +146,7 @@ class ClientController extends Controller
             $clinics = Clinic::where('client_id' , $client->id)->get('id')->toArray(); 
             // return $clinics;
            return  \App\Models\Appointment::with(['vistType', 'clinic', 'patient'])
-                    // ->whereIn('clinic_id', $clinics)
+                    ->whereIn('clinic_id', [98])
                     // ->where('date', date('Y-m-d'))
                     ->orderBy('from_time')
                     ->get() ;
