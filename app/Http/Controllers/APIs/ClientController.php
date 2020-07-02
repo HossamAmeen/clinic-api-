@@ -144,12 +144,13 @@ class ClientController extends Controller
             // return request('id') ;
             // return $client;
             $clinics = Clinic::where('client_id' , $client->id)->get('id')->toArray(); 
-            return $clinics;
-            return $this->APIResponse(\App\Models\Appointment::with(['vistType', 'clinic', 'patient'])
-                    ->whereIn('clinic_id', $clinics)
+            // return $clinics;
+           return  \App\Models\Appointment::with(['vistType', 'clinic', 'patient'])
+                    // ->whereIn('clinic_id', $clinics)
                     // ->where('date', date('Y-m-d'))
                     ->orderBy('from_time')
-                    ->get(),
+                    ->get() ;
+            return $this->APIResponse( null,
                     // ->get(['id','from_time']),
 
                 null, 201);
