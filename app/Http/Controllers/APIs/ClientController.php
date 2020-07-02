@@ -111,8 +111,8 @@ class ClientController extends Controller
         $client = ClientModel::find(request('id'));
         if(isset($client))
         {
-            $clinics = Clinic::where('client_id' , $client->id)->get('id')->toArray(); 
-            $patients = PatientModel::where('client_id', $client->id)->get();
+            $clinics = Clinic::where('client_id' , $client->id)->pluck('id'); 
+            $patients = PatientModel::whereIn('client_id', $client->id)->get();
             $data = array();
             foreach ($patients as $patient) {
                 $datas['id'] = $patient->id;
