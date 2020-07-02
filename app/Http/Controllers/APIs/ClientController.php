@@ -44,8 +44,8 @@ class ClientController extends Controller
             else
             return $this->APIResponse(null, "clinic not found", 400);
             
-            if($data['image'] == null ){
-                $data['image'] = asset("avatar.png") ; 
+            if($data['img'] == null ){
+                $data['img'] = asset("avatar.png") ; 
             }
             return $this->APIResponse($data, null, 200);
         }
