@@ -64,22 +64,27 @@ class ClientController extends Controller
     public function updateAccount(Request $request)
     {
         $user = UserModel::find(request('id'));
-        $client = ClientModel::where('client_user_id', $user->id)->first();
         if (isset($client)) {
-            // return $client;
-            // $client->clinic_email = $request->clinic_email;
-            // $client->clinic_name = $request->clinic_name;
-            // $client->doctor_full_name = $request->doctor_full_name;
-            // $client->doctor_tel = $request->doctor_tel;
-            // $client->specialist_id = $request->specialist_id;
-            // $client->country_id = $request->country_id;
-            // // $client->city_id = $request->city_id;
-            // $client->town_id = $request->town_id;
-            $client->update($request->all());
-            $client->save();
-            return $this->APIResponse(null, null, 201);
+            $user->update($request->all());
+            $client = ClientModel::where('client_user_id', $user->id)->first();
+            if (isset($client)) {
+                // return $client;
+                // $client->clinic_email = $request->clinic_email;
+                // $client->clinic_name = $request->clinic_name;
+                // $client->doctor_full_name = $request->doctor_full_name;
+                // $client->doctor_tel = $request->doctor_tel;
+                // $client->specialist_id = $request->specialist_id;
+                // $client->country_id = $request->country_id;
+                // // $client->city_id = $request->city_id;
+                // $client->town_id = $request->town_id;
+                $client->update($request->all());
+                $client->save();
+                return $this->APIResponse(null, null, 201);
+            }
+            $error = "client not found";
         }
-        $error = "not found";
+        else
+        $error = "user not found";
         return $this->APIResponse(null, $error, 404);
 
     }
