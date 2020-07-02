@@ -17,7 +17,7 @@ class PatientVisitModel extends Model
 
         public function visitType()
         {
-            return $this->belongsTo(visitType::class);
+            return $this->belongsTo(VisitType::class);
         }
         public function prescriptionImages()
         {
