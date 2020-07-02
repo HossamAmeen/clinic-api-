@@ -169,10 +169,10 @@ class ClientController extends Controller
     public function setAppointment(Request $request)
     {
         $request['clinic_id'] = request('clinic_id');
-        $clinic = Clinic::find(request('clinic_id'));
+        // $clinic = Clinic::find(request('clinic_id'));
         if(isset($clinic) ){
             // return "Test";
-           $patient =  PatientClientModel::where('client_id' , $clinic->client_id)->where('client_pk_value' , request('patient_id'))->first();
+           $patient =  PatientClientModel::where('client_id' , request('clinic_id'))->where('client_pk_value' , request('patient_id'))->first();
            if(isset($patient))
            $request['patient_id'] = $patient->patient_id ;  
            else
