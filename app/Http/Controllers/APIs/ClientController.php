@@ -326,6 +326,7 @@ class ClientController extends Controller
     }
     public function getPatientVisit()
     {
+        return \App\Models\PatientVisitModel::all();
         return $this->APIResponse(\App\Models\PatientVisitModel::with(['prescriptionImages', 'patient'])->find(request('id')), null, 201);
 
     }
