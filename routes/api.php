@@ -7,7 +7,7 @@ Route::namespace ("APIs")->group(function () {
         Route::post("login", "ClientController@login");
         Route::get("account", "ClientController@getAccount");
         Route::put("update", "ClientController@updateAccount");
-        Route::put("update-image", "ClientController@updateImage");
+        Route::post("update-image", "ClientController@updateImage");
         Route::put("update/password", "ClientController@updatePassword");
         Route::get("licence", "ClientController@getLastLicence");
         Route::get("patients", "ClientController@getPatients");

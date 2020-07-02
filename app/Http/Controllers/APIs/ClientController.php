@@ -127,7 +127,7 @@ class ClientController extends Controller
 
             //width , height
             Image::make($image->getRealPath())->resize($width, $height)->save($path);
-            $user->img= $folderName."/".date("Y-m-d") . '/' . $fileName ;
+            $user->img= asset($folderName."/".date("Y-m-d") . '/' . $fileName) ;
             $user->save();
        
         }
