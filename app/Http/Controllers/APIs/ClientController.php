@@ -44,6 +44,9 @@ class ClientController extends Controller
             else
             return $this->APIResponse(null, "clinic not found", 400);
             
+            if($date['image'] == null ){
+                $date['image'] = asset("avatar.png") ; 
+            }
             return $this->APIResponse($data, null, 200);
         }
         $error = "Unauthorized";
