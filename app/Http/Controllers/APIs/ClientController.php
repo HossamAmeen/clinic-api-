@@ -112,7 +112,7 @@ class ClientController extends Controller
         if(isset($client))
         {
             $clinics = Clinic::where('client_id' , $client->id)->pluck('id'); 
-            $patients = PatientModel::whereIn('client_id', $client->id)->get();
+            $patients = PatientModel::whereIn('client_id', $clinics->id)->get();
             $data = array();
             foreach ($patients as $patient) {
                 $datas['id'] = $patient->id;
