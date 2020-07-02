@@ -42,7 +42,7 @@ class MobileController extends Controller
     }
     public function contact(Request $request)
     {
-        Contact::create([
+        \App\Models\Contact::create([
             'message' => request('message')
         ]);
         return $this->APIResponse(null, null, 201);
