@@ -7,12 +7,13 @@ Route::namespace ("APIs")->group(function () {
         Route::post("login", "ClientController@login");
         Route::get("account", "ClientController@getAccount");
         Route::put("update", "ClientController@updateAccount");
+        Route::put("update-image", "ClientController@updateImage");
         Route::put("update/password", "ClientController@updatePassword");
         Route::get("licence", "ClientController@getLastLicence");
         Route::get("patients", "ClientController@getPatients");
         Route::get("patient/{id}", "ClientController@getPatient");
-        Route::get("show-patient/visits", "ClientController@getPatientVisits");
-        Route::get("visits", "ClientController@getPatientVisit");
+        Route::get("show-patient/visits", "ClientController@getPatientVisits");///// visis 
+        Route::get("visits", "ClientController@getPatientVisit"); //// show visit 
         Route::get("appointments/{id?}", "ClientController@getAppointments");
         Route::post("appointment", "ClientController@setAppointment");
         Route::put("delay-appointment", "ClientController@delayAppointment");
