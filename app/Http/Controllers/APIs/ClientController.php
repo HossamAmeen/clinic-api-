@@ -170,16 +170,16 @@ class ClientController extends Controller
     {
         $request['clinic_id'] = request('clinic_id');
         // $clinic = Clinic::find(request('clinic_id'));
-        if(isset($clinic) ){
+        
             // return "Test";
            $patient =  PatientClientModel::where('client_id' , request('clinic_id'))->where('client_pk_value' , request('patient_id'))->first();
            if(isset($patient))
            $request['patient_id'] = $patient->patient_id ;  
            else
            return $this->APIResponse(null, "patient not found", 400);
-        }
-        else
-        return $this->APIResponse(null, "clinic not found", 400);
+        
+        
+       
         // return $request->all();
         \App\Models\Appointment::create($request->all());
         return $this->APIResponse(null, null, 201);
