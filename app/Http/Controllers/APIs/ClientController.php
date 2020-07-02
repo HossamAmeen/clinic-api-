@@ -10,6 +10,7 @@ use App\Models\UserModel;
 use App\Models\PatientModel;
 use App\Models\PatientClientModel;
 use App\Models\Clinic;
+use App\Models\LicenceModel;
 use Auth;
 use Image, Carbon\Carbon, File;
 
@@ -29,8 +30,20 @@ class ClientController extends Controller
             $client = UserModel::where("user_name", request('user_name'))->first();
             // $success['token'] =  $client->createToken('token')->accessToken;
             // return $this->APIResponse($data, null, 200);
-            $datas = ClientModel::where('client_user_id' , Auth::user()->id)->first();
-            $data['id'] =  $datas->id;
+            $client = ClientModel::where('client_user_id' , Auth::user()->id)->first();
+            $data['id'] =  $client->id;
+            $clinic = Clinic::where('client_id' , $client->id)->first(); 
+            if(isset( $clinic ))
+            {
+                $licence = LicenceModel::where('clinic_id' , $clinic->id )->first();
+                if(isset( $licence ))
+                $data['licence_date'] = $licence->end_on ; 
+                else
+                return $this->APIResponse(null, "licnence not found", 400);
+            }
+            else
+            return $this->APIResponse(null, "clinic not found", 400);
+            
             return $this->APIResponse($data, null, 200);
         }
         $error = "Unauthorized";
@@ -41,7 +54,7 @@ class ClientController extends Controller
     {
         // $client = UserModel::findOrFail(request('id')); Input::get('id')
         // $client = ClientModel::where('client_user_id' , Auth::guard('api')->user()->id)->first();twon
-        $client = ClientModel::with(['town' , 'country' , 'specialist'])->where('client_user_id', request('id'))->first();
+        $client = ClientModel::with(['user','town' , 'country' , 'specialist'])->where('client_user_id', request('id'))->first();
         return $this->APIResponse($client, null, 201);
     }
 

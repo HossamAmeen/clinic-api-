@@ -42,6 +42,9 @@ class MobileController extends Controller
     }
     public function contact(Request $request)
     {
+        Contact::create([
+            'message' => request('message')
+        ]);
         return $this->APIResponse(null, null, 201);
     }
     public function visit_types($clinic_id)

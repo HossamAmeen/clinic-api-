@@ -41,4 +41,8 @@ class ClientModel extends Model
     {
         return $this->belongsTo(SpecialistModel::class , 'specialist_id');
     }
+    public function user()
+    {
+        return $this->belongsTo(UserModel::class , 'user_id');
+    }
 }//end client model
