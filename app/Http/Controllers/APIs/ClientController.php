@@ -90,52 +90,62 @@ class ClientController extends Controller
     }
     public function updateImage(Request $request )
     {
-        $user = UserModel::find(request('id'));
-        if (isset($user) ) {
-                $image = $request->file('image');
-                $folderName    = "uploads/prescription";
-
-                $size = getimagesize($_FILES['image']['tmp_name']);
-
-                if(intval($_FILES['image']['tmp_name']) > 500000)
-                return $this->APIResponse(null, "image size is bigger" , 400 );
-                // return Redirect::back()->withErrors([ '']);
-
-                    $height = 800 ;
-                    $width = 2000 ; 
-                    $actualWidth = $size[0];
-                    $actualHeight = $size[1];
-                    $widthRatio = $actualWidth / 800;
-                    $heightRatio = $actualHeight /2000;
-
-                    if($heightRatio > $widthRatio){
-                        //height still as it
-                        $width = $actualWidth/$heightRatio;
-                    }else{
-                        //width still as it
-                        $height = $actualHeight / $widthRatio;
-                    }
-
-            if (!is_dir(base_path()."/".$folderName."/".date("Y-m-d"))) {
-                mkdir(base_path()."/".$folderName."/".date("Y-m-d"), 0777, TRUE);
+        $client = ClientModel::find(request('id'));
+        if(isset($client))
+        {
+            $user = UserModel::find($client->client_user_id);
+            if (isset($user) ) {
+                    $image = $request->file('image');
+                    $folderName    = "uploads/prescription";
+    
+                    $size = getimagesize($_FILES['image']['tmp_name']);
+    
+                    if(intval($_FILES['image']['tmp_name']) > 500000)
+                    return $this->APIResponse(null, "image size is bigger" , 400 );
+                    // return Redirect::back()->withErrors([ '']);
+    
+                        $height = 800 ;
+                        $width = 2000 ; 
+                        $actualWidth = $size[0];
+                        $actualHeight = $size[1];
+                        $widthRatio = $actualWidth / 800;
+                        $heightRatio = $actualHeight /2000;
+    
+                        if($heightRatio > $widthRatio){
+                            //height still as it
+                            $width = $actualWidth/$heightRatio;
+                        }else{
+                            //width still as it
+                            $height = $actualHeight / $widthRatio;
+                        }
+    
+                if (!is_dir(base_path()."/".$folderName."/".date("Y-m-d"))) {
+                    mkdir(base_path()."/".$folderName."/".date("Y-m-d"), 0777, TRUE);
+                }
+    
+                
+                $fileName  = time() . '.' . $image->getClientOriginalExtension();
+    
+                $path = base_path()."/".$folderName."/".date("Y-m-d") . '/' . $fileName;
+    
+                //width , height
+                Image::make($image->getRealPath())->resize($width, $height)->save($path);
+                $user->img= asset($folderName."/".date("Y-m-d") . '/' . $fileName) ;
+                $user->save();
+           
             }
-
-            
-            $fileName  = time() . '.' . $image->getClientOriginalExtension();
-
-            $path = base_path()."/".$folderName."/".date("Y-m-d") . '/' . $fileName;
-
-            //width , height
-            Image::make($image->getRealPath())->resize($width, $height)->save($path);
-            $user->img= asset($folderName."/".date("Y-m-d") . '/' . $fileName) ;
-            $user->save();
-       
+            else
+            {
+                $error = "user not found";
+                return $this->APIResponse(null, $error, 400);
+            }
         }
         else
         {
-            $error = "user not found";
+            $error = "client not found";
             return $this->APIResponse(null, $error, 400);
         }
+      
         return $this->APIResponse(null, null, 200);
     }
     public function updatePassword(Request $request)
