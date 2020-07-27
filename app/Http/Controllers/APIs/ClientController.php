@@ -9,8 +9,9 @@ use App\Models\ClientModel;
 use App\Models\UserModel;
 use App\Models\PatientModel;
 use App\Models\PatientClientModel;
-use App\Models\Clinic;
-use App\Models\LicenceModel;
+use App\Models\Clinic; 
+use App\Models\LicenceModel;  
+use App\Models\{Measurement , Attachment};
 use Auth;
 use Image, Carbon\Carbon, File;
 
@@ -31,18 +32,23 @@ class ClientController extends Controller
             // $success['token'] =  $client->createToken('token')->accessToken;
             // return $this->APIResponse($data, null, 200);
             $client = ClientModel::where('client_user_id' , Auth::user()->id)->first();
-            $data['id'] =  $client->id;
-            $clinic = Clinic::where('client_id' , $client->id)->first(); 
-            if(isset( $clinic ))
-            {
-                $licence = LicenceModel::where('clinic_id' , $clinic->id )->first();
-                if(isset( $licence ))
-                $data['licence_date'] = $licence->end_on ; 
+            if(isset($client)){
+                $data['id'] =  $client->id;
+                $clinic = Clinic::where('client_id' , $client->id)->first(); 
+                if(isset( $clinic ))
+                {
+                    $licence = LicenceModel::where('clinic_id' , $clinic->id )->first();
+                    if(isset( $licence ))
+                    $data['licence_date'] = $licence->end_on ; 
+                    else
+                    return $this->APIResponse(null, "licnence not found", 400);
+                }
                 else
-                return $this->APIResponse(null, "licnence not found", 400);
+                return $this->APIResponse(null, "clinic not found", 400);
             }
             else
-            return $this->APIResponse(null, "clinic not found", 400);
+            return $this->APIResponse(null, "client not found", 400);
+           
             
             if($data['img'] == null ){
                 $data['img'] = asset("avatar.png") ; 
@@ -379,5 +385,16 @@ class ClientController extends Controller
         ]);
 
         return $this->APIResponse(null, null, 200);
+    }
+
+    public function getMeasurements()
+    {
+        
+        return $this->APIResponse(Measurement::where('visit_id' , request('visit_id'))->get(), null, 200);
+    }
+
+    public function getAttachments()
+    {
+        return $this->APIResponse(Attachment::where('visit_id' , request('visit_id'))->get(), null, 200);
     }
 }

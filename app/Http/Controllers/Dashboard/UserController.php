@@ -16,7 +16,7 @@ class UserController extends BackEndController
     }
 
     public function store(Request $request){
-    //    return $request->all();
+    
        
         $requestArray = $request->all();
         if(isset($requestArray['password']) )
